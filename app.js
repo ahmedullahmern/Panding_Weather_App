@@ -28,6 +28,9 @@ function fetchWeater() {
             temperatur.innerHTML = Math.round(data.main.temp - 273) + "°C"
             colud_condition.innerHTML = data.weather[0].main
             img_set.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
+            if(data.weather[0].main==="Clear"){
+                main1.style.backgroundColor="red"
+            }
         })        
         .catch(function(result){
             if(result){
