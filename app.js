@@ -6,44 +6,55 @@ var loader = document.getElementById("loader")
 var ci = document.getElementById("ci")
 var main1 = document.getElementById("main1")
 var APIkey = "f3e9d12da54701d645d6853826dfa41c"
-var city  ;
+var city;
 
 function fetchWeater() {
     var APIurl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIkey}`;
-    img_set.innerHTML=""
-    temperatur.innerHTML="Loading..."
-    colud_condition.innerHTML=""
-    ci.innerHTML=""
+    img_set.style.display = "none"
+    temperatur.innerHTML = ""
+    loader.style.display = "block"
+    colud_condition.innerHTML = ""
+    ci.innerHTML = ""
+
+    if (APIurl == "net::ERR_INTERNET_DISCONNECTED") {
+        alert("hi")
+    }
 
     fetch(APIurl)
-        .then(function(res){
-            if(!res.ok){
+        .then(function (res) {
+            if (!res.ok) {
                 throw new console.error("error he");
             }
-       return res.json()
+            return res.json()
         })
         .then((data) => {
+            img_set.style.display = "block"
             console.log(data)
-            ci.innerHTML=data.name
+            ci.innerHTML = data.name
             temperatur.innerHTML = Math.round(data.main.temp - 273) + "°C"
             colud_condition.innerHTML = data.weather[0].main
             img_set.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
 
-        })        
-        .catch(function(result){
-            if(result){
-                ci.innerHTML="city not found"
-                temperatur.innerHTML=""
-            }
         })
+        .catch(function (result) {
+            if (result) {
+                ci.innerHTML = "city not found"
+                temperatur.innerHTML = ""
+                loader.style.display = "none"
+            }
+            
+        })
+        .finally(() => {
+            loader.style.display = "none";
+        });
 
 }
 fetchWeater()
 
-selected.addEventListener("change",function(){
-    city=selected.value
+selected.addEventListener("change", function () {
+    city = selected.value
     fetchWeater()
-    selected.value=""
+    selected.value = ""
 })
 
 
